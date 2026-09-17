@@ -10,3 +10,20 @@ function form(p){if(!isHost())return;el("#modal-root").innerHTML="<div class='mo
 function authCopy(){let name=chosenRole==="host"?"host":"user";el("#auth-submit").textContent=creatingAccount?"Create "+name+" account":"Sign in as "+name;el("#switch").textContent=creatingAccount?"I already have an account":"Create a new account";el("#role-note").textContent=chosenRole==="host"?"Host access is limited to authorised host accounts.":"Users can accept projects and submit evidence.";document.querySelectorAll(".role").forEach(b=>b.classList.toggle("active",b.dataset.role===chosenRole))}
 function bind(){if(!me){document.querySelectorAll(".role").forEach(b=>b.onclick=()=>{chosenRole=b.dataset.role;authCopy()});el("#switch").onclick=()=>{creatingAccount=!creatingAccount;authCopy()};el("#auth").onsubmit=async e=>{e.preventDefault();let d=Object.fromEntries(new FormData(e.target)),r=creatingAccount?await sb.auth.signUp({email:d.email,password:d.password,options:{emailRedirectTo:location.href,data:{requested_role:chosenRole}}}):await sb.auth.signInWithPassword(d);if(r.error){el("#error").textContent=r.error.message;return}if(creatingAccount&&!r.data.session){el("#error").textContent="Check your email to confirm your account.";return}if(!creatingAccount){let profile=await sb.from("profiles").select("role").eq("id",r.data.user.id).single();if(profile.data?.role!==chosenRole){await sb.auth.signOut();el("#error").textContent="This account uses the other login option.";return}}refresh()};return}el("#out").onclick=()=>sb.auth.signOut();el("#new")?.addEventListener("click",()=>form());document.querySelectorAll("[data-page]").forEach(b=>b.onclick=()=>{location.hash=b.dataset.page==="projects"?"":b.dataset.page;draw()});document.querySelectorAll("[data-action]").forEach(b=>b.onclick=()=>action(b.dataset.action,b.dataset.id))}
 const loginView=login;login=function(){creatingAccount=false;return loginView()};
+// Fresh authentication mode for every login screen.
+const signedInBind=bind;
+bind=function(){
+ if(me)return signedInBind();
+ let signupMode=false;creatingAccount=false;
+ document.querySelectorAll(".role").forEach(b=>b.onclick=()=>{chosenRole=b.dataset.role;authCopy()});
+ el("#switch").onclick=()=>{signupMode=!signupMode;creatingAccount=signupMode;authCopy()};
+ el("#auth").onsubmit=async e=>{
+  e.preventDefault();el("#error").textContent="";
+  let d=Object.fromEntries(new FormData(e.target));
+  let r=signupMode?await sb.auth.signUp({email:d.email,password:d.password,options:{emailRedirectTo:location.href,data:{requested_role:chosenRole}}}):await sb.auth.signInWithPassword({email:d.email,password:d.password});
+  if(r.error){el("#error").textContent=r.error.message;return}
+  if(signupMode&&!r.data.session){el("#error").textContent="Account created. You can now sign in.";return}
+  if(!signupMode){let profile=await sb.from("profiles").select("role").eq("id",r.data.user.id).single();if(profile.data?.role!==chosenRole){await sb.auth.signOut();el("#error").textContent="This account uses the other login option.";return}}
+  refresh();
+ };
+};
