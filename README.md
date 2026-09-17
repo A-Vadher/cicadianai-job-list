@@ -1,4 +1,4 @@
-# Cicadianai job list
+# Circadianai job list
 
 A functional browser prototype for assigning paid projects, accepting work, uploading evidence, approving jobs, and viewing a private earnings ledger.
 
