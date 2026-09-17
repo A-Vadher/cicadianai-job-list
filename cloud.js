@@ -85,4 +85,14 @@ function bind(){
   el('#out').onclick=()=>sb.auth.signOut();el('#new')?.addEventListener('click',()=>projectForm());el('#automatic')?.addEventListener('click',catalogue);document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>{location.hash=b.dataset.page==='projects'?'':b.dataset.page;draw()});document.querySelectorAll('[data-user]').forEach(b=>b.onclick=()=>{location.hash=`user/${b.dataset.user}`});document.querySelectorAll('[data-action]').forEach(b=>b.onclick=()=>projectAction(b.dataset.action,b.dataset.id));
 }
 async function projectAction(action,id){const p=projects.find(x=>x.id===id);if(action==='edit')return projectForm(p);if(action==='delete'&&confirm('Delete this project?'))await sb.from('projects').delete().eq('id',id);if(action==='accept')await sb.rpc('accept_project',{p_project_id:id});if(action==='cancel')await sb.rpc('request_cancellation',{p_project_id:id});if(action==='approve')await sb.from('projects').update({status:'approved',approved_at:new Date().toISOString()}).eq('id',id);if(action==='approve-cancel')await sb.from('projects').update({status:'open',worker_id:null}).eq('id',id);if(action==='proof'){const picker=el('#evidence-picker');picker.value='';picker.onchange=async()=>{for(const file of picker.files){const name=file.name.replace(/[^a-zA-Z0-9._-]/g,'-'),path=`${id}/${session.user.id}/${Date.now()}-${name}`,upload=await sb.storage.from('evidence').upload(path,file);if(upload.error){alert(upload.error.message);return}await sb.from('project_evidence').insert({project_id:id,submitted_by:session.user.id,storage_path:path})}await sb.rpc('mark_submitted',{p_project_id:id});await refresh()};picker.click();return}await refresh()}
-window.addEventListener('hashchange',()=>me&&draw());sb.auth.onAuthStateChange(()=>setTimeout(refresh,0));refresh();
+let starting=true;
+window.addEventListener('hashchange',()=>me&&draw());
+sb.auth.onAuthStateChange(()=>{if(!starting)setTimeout(refresh,0)});
+async function startAtLogin(){
+  await sb.auth.signOut({scope:'local'});
+  starting=false;
+  session=null;
+  me=null;
+  draw();
+}
+startAtLogin();
