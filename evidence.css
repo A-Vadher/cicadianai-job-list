@@ -1,0 +1,91 @@
+.evidence {
+  margin-top: .65rem;
+  align-items: stretch;
+}
+
+.evidence-label {
+  flex-basis: 100%;
+  font-size: .72rem !important;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted) !important;
+}
+
+.evidence-image,
+.evidence-file {
+  display: flex;
+  color: var(--ink);
+  text-decoration: none;
+  background: #f8faf9;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  overflow: hidden;
+}
+
+.evidence-image {
+  width: 112px;
+  flex-direction: column;
+}
+
+.evidence-image img {
+  width: 110px;
+  height: 72px;
+  object-fit: cover;
+  border: 0;
+  border-radius: 0;
+}
+
+.evidence-image span {
+  padding: .35rem .45rem;
+  overflow: hidden;
+  font-size: .68rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.evidence-file {
+  max-width: 260px;
+  align-items: center;
+  gap: .55rem;
+  padding: .55rem .65rem;
+}
+
+.evidence-file > b {
+  display: grid;
+  min-width: 42px;
+  height: 42px;
+  place-items: center;
+  color: #fff;
+  font-size: .61rem;
+  letter-spacing: .04em;
+  background: var(--dark);
+  border-radius: 7px;
+}
+
+.evidence-file span {
+  min-width: 0;
+}
+
+.evidence-file strong,
+.evidence-file small {
+  display: block;
+}
+
+.evidence-file strong {
+  overflow: hidden;
+  font-size: .76rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.evidence-file small {
+  color: var(--muted);
+  font-size: .68rem;
+}
+
+.evidence-image:hover,
+.evidence-file:hover {
+  background: #fff;
+  border-color: #9fb8ae;
+}

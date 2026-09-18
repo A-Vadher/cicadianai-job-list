@@ -9,7 +9,7 @@ Open `index.html` in a modern web browser. No installation is required.
 ## Demo flow
 
 1. Create a **Host** account and add a project. Set its hours, hourly rate, optional calendar deadline, and whether it is open to anyone or a specific worker.
-2. Create a **Worker** account (sign out first). The worker can accept available work, attach photo evidence, or request cancellation.
+2. Create a **Worker** account (sign out first). The worker can accept available work, attach photos or common document, spreadsheet, presentation, audio, video and ZIP evidence files, or request cancellation.
 3. Sign back in as the host and approve a submitted project.
 4. The worker’s **My earnings** page then shows the approved payment, monthly summary, and year chart.
 
